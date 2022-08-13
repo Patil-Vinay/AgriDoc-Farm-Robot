@@ -1,0 +1,8 @@
+# ROS 2 build output
+part1_autonomous_robot/agridoc_ws/build/
+part1_autonomous_robot/agridoc_ws/install/
+part1_autonomous_robot/agridoc_ws/log/
+
+# python
+__pycache__/
+*.pyc

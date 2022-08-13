@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+<robot name="agridoc" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- Meshes come from the Fusion 360 model. They are in mm and use the CAD origin,
+       which is the rear bottom corner of the robot. -->
+  <xacro:property name="mesh_scale" value="0.001 0.001 0.001"/>
+  <xacro:property name="mesh_dir" value="package://agridoc_description/meshes"/>
+
+  <xacro:property name="wheel_radius" value="0.05"/>
+  <xacro:property name="wheel_width" value="0.04"/>
+  <xacro:property name="wheel_y" value="0.21"/>
+  <!-- distance from the rear (driven) axle to the front (free) axle -->
+  <xacro:property name="axle_gap" value="0.34"/>
+  <!-- rear axle position in the CAD frame -->
+  <xacro:property name="axle_x" value="0.065"/>
+
+  <material name="wood"><color rgba="0.55 0.33 0.18 1"/></material>
+  <material name="white"><color rgba="1 1 1 1"/></material>
+  <material name="grey"><color rgba="0.6 0.6 0.6 1"/></material>
+  <material name="dark_grey"><color rgba="0.25 0.25 0.25 1"/></material>
+  <material name="orange"><color rgba="0.9 0.45 0.1 1"/></material>
+  <material name="black"><color rgba="0.1 0.1 0.1 1"/></material>
+  <material name="blue"><color rgba="0.1 0.2 0.8 1"/></material>
+
+  <xacro:macro name="body_part" params="name material">
+    <visual>
+      <geometry><mesh filename="${mesh_dir}/${name}.stl" scale="${mesh_scale}"/></geometry>
+      <material name="${material}"/>
+    </visual>
+  </xacro:macro>
+
+  <link name="base_footprint"/>
+
+  <!-- base_link is the middle of the rear axle, the robot turns about this point -->
+  <link name="base_link"/>
+  <joint name="base_joint" type="fixed">
+    <parent link="base_footprint"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 ${wheel_radius}"/>
+  </joint>
+
+  <link name="chassis">
+    <xacro:body_part name="box" material="wood"/>
+    <xacro:body_part name="pipe" material="white"/>
+    <xacro:body_part name="tank" material="grey"/>
+    <xacro:body_part name="motors" material="orange"/>
+    <xacro:body_part name="brackets" material="grey"/>
+    <xacro:body_part name="electronics" material="dark_grey"/>
+    <xacro:body_part name="lidar" material="blue"/>
+    <xacro:body_part name="disease_camera" material="black"/>
+    <xacro:body_part name="weed_camera" material="black"/>
+    <collision>
+      <origin xyz="0.235 0 0.204"/>
+      <geometry><box size="0.47 0.40 0.228"/></geometry>
+    </collision>
+    <collision>
+      <origin xyz="0.383 0 0.345"/>
+      <geometry><cylinder radius="0.035" length="0.054"/></geometry>
+    </collision>
+    <inertial>
+      <origin xyz="0.212 0.004 0.194"/>
+      <mass value="18.26"/>
+      <inertia ixx="0.343" ixy="-0.025" ixz="-0.042" iyy="0.463" iyz="-0.008" izz="0.525"/>
+    </inertial>
+  </link>
+  <joint name="chassis_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="chassis"/>
+    <origin xyz="${-axle_x} 0 ${-wheel_radius}"/>
+  </joint>
+
+  <!-- side is 1 for left and -1 for right -->
+  <xacro:macro name="wheel" params="name x side">
+    <link name="${name}_wheel">
+      <visual>
+        <origin rpy="0 0 ${(1 - side) * pi / 2}"/>
+        <geometry><mesh filename="${mesh_dir}/wheel.stl" scale="${mesh_scale}"/></geometry>
+        <material name="black"/>
+      </visual>
+      <collision>
+        <origin rpy="${pi / 2} 0 0"/>
+        <geometry><cylinder radius="${wheel_radius}" length="${wheel_width}"/></geometry>
+      </collision>
+      <inertial>
+        <mass value="0.23"/>
+        <inertia ixx="0.000186" ixy="0" ixz="0" iyy="0.000326" iyz="0" izz="0.000186"/>
+      </inertial>
+    </link>
+    <joint name="${name}_wheel_joint" type="continuous">
+      <parent link="base_link"/>
+      <child link="${name}_wheel"/>
+      <origin xyz="${x} ${side * wheel_y} 0"/>
+      <axis xyz="0 1 0"/>
+    </joint>
+  </xacro:macro>
+
+  <!-- rear wheels have the motors, front wheels only spin on a fixed axle -->
+  <xacro:wheel name="rear_left" x="0" side="1"/>
+  <xacro:wheel name="rear_right" x="0" side="-1"/>
+  <xacro:wheel name="front_left" x="${axle_gap}" side="1"/>
+  <xacro:wheel name="front_right" x="${axle_gap}" side="-1"/>
+
+  <!-- sensor frames, positions are in the CAD frame -->
+  <link name="lidar_link"/>
+  <joint name="lidar_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="lidar_link"/>
+    <origin xyz="0.383 0 0.345"/>
+  </joint>
+
+  <!-- top camera looks ahead at the plants, the lower one is tilted down at the ground for weeds -->
+  <xacro:macro name="camera" params="name x z pitch">
+    <link name="${name}_link"/>
+    <joint name="${name}_joint" type="fixed">
+      <parent link="chassis"/>
+      <child link="${name}_link"/>
+      <origin xyz="${x} 0 ${z}" rpy="0 ${pitch} 0"/>
+    </joint>
+    <link name="${name}_optical_link"/>
+    <joint name="${name}_optical_joint" type="fixed">
+      <parent link="${name}_link"/>
+      <child link="${name}_optical_link"/>
+      <origin rpy="${-pi / 2} 0 ${-pi / 2}"/>
+    </joint>
+  </xacro:macro>
+
+  <xacro:camera name="disease_camera" x="0.502" z="0.299" pitch="0"/>
+  <xacro:camera name="weed_camera" x="0.534" z="0.167" pitch="0.6"/>
+
+  <xacro:include filename="$(find agridoc_description)/urdf/agridoc.gazebo.xacro"/>
+
+</robot>
