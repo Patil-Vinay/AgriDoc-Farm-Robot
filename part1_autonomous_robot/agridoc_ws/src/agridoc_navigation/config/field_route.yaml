@@ -1,0 +1,12 @@
+# Route through the tomato field, in the map frame.
+# Each point is [x, y, yaw]. Home is the south-west corner of the field.
+# The robot drives up and down the 3 aisles, then comes back home.
+home: [-0.9, -2.1, 0.0]
+
+waypoints:
+  - [0.4, -1.4, 0.0]
+  - [6.4, -1.4, 0.0]
+  - [6.4, 0.0, 3.14]
+  - [0.4, 0.0, 3.14]
+  - [0.4, 1.4, 0.0]
+  - [6.4, 1.4, 0.0]
