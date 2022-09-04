@@ -25,6 +25,8 @@ setup(
     entry_points={
         'console_scripts': [
             'patrol = agridoc_navigation.patrol:main',
+            'gyro_bias = agridoc_navigation.gyro_bias:main',
+            'gps_patrol = agridoc_navigation.gps_patrol:main',
         ],
     },
 )

@@ -38,7 +38,9 @@
       <max_wheel_torque>20</max_wheel_torque>
       <max_wheel_acceleration>2.0</max_wheel_acceleration>
       <publish_odom>true</publish_odom>
-      <publish_odom_tf>true</publish_odom_tf>
+      <!-- odom from the wheel angles like the real encoders, the ekf publishes the tf -->
+      <odometry_source>0</odometry_source>
+      <publish_odom_tf>false</publish_odom_tf>
       <publish_wheel_tf>false</publish_wheel_tf>
       <odometry_frame>odom</odometry_frame>
       <robot_base_frame>base_footprint</robot_base_frame>
@@ -85,6 +87,65 @@
         </ros>
         <output_type>sensor_msgs/LaserScan</output_type>
         <frame_name>lidar_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- BNO055, only the gyro is used by the ekf.
+       The noise is from the datasheet, the bias is there so gyro_bias has something to remove -->
+  <gazebo reference="imu_link">
+    <sensor name="imu" type="imu">
+      <always_on>true</always_on>
+      <update_rate>50</update_rate>
+      <imu>
+        <angular_velocity>
+          <z>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>${radians(0.014) * sqrt(50)}</stddev>
+              <bias_mean>0.005</bias_mean>
+              <bias_stddev>0.001</bias_stddev>
+            </noise>
+          </z>
+        </angular_velocity>
+      </imu>
+      <plugin name="imu_plugin" filename="libgazebo_ros_imu_sensor.so">
+        <ros>
+          <remapping>~/out:=imu/data</remapping>
+        </ros>
+        <frame_name>imu_link</frame_name>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+  <!-- NEO-M8N, one fix a second like the real module. Plain GPS is good to about 2 m,
+       the noise here is lower so the robot fits between the simulated rows -->
+  <gazebo reference="gps_link">
+    <material>Gazebo/Blue</material>
+    <sensor name="gps" type="gps">
+      <always_on>true</always_on>
+      <update_rate>1</update_rate>
+      <gps>
+        <position_sensing>
+          <horizontal>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.3</stddev>
+            </noise>
+          </horizontal>
+          <vertical>
+            <noise type="gaussian">
+              <mean>0.0</mean>
+              <stddev>0.6</stddev>
+            </noise>
+          </vertical>
+        </position_sensing>
+      </gps>
+      <plugin name="gps_plugin" filename="libgazebo_ros_gps_sensor.so">
+        <ros>
+          <remapping>~/out:=gps/fix</remapping>
+        </ros>
+        <frame_name>gps_link</frame_name>
       </plugin>
     </sensor>
   </gazebo>

@@ -1,0 +1,18 @@
+# GPS route through the simulated tomato field (agridoc_gazebo puts the field in Pune, 18.520 N, 73.857 E).
+# home is where the robot starts: [latitude, longitude, heading]. The heading is the way the
+# robot faces there, in degrees clockwise from north like a compass (90 is east).
+# The map frame starts at home with x pointing along the heading.
+# waypoints are [latitude, longitude]. The robot snakes up and down the 3 aisles, then comes
+# back along the east headland and through the first aisle, so it never cuts across a row.
+# At each point it turns towards the next one and at the end it drives home.
+home: [18.51998103, 73.85699148, 90.0]
+
+waypoints:
+  - [18.51998735, 73.85700379]    # aisle 1, west end
+  - [18.51998735, 73.85706250]    # aisle 1, east end
+  - [18.52000000, 73.85706250]    # aisle 2, east end
+  - [18.52000000, 73.85700379]    # aisle 2, west end
+  - [18.52001265, 73.85700379]    # aisle 3, west end
+  - [18.52001265, 73.85706250]    # aisle 3, east end
+  - [18.51998735, 73.85706250]    # down the east headland
+  - [18.51998735, 73.85700379]    # back through aisle 1

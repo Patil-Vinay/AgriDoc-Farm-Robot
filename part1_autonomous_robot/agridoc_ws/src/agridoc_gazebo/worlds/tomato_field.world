@@ -25,6 +25,16 @@
       </link>
     </model>
 
+    <!-- where the field is on the earth (Pune), for the GPS. x points east and y north.
+         Gazebo 11 turns its local frame around (x west, y south), the 180 puts it back -->
+    <spherical_coordinates>
+      <surface_model>EARTH_WGS84</surface_model>
+      <latitude_deg>18.520</latitude_deg>
+      <longitude_deg>73.857</longitude_deg>
+      <elevation>560</elevation>
+      <heading_deg>180</heading_deg>
+    </spherical_coordinates>
+
     <physics type="ode">
       <max_step_size>0.001</max_step_size>
       <real_time_update_rate>1000</real_time_update_rate>

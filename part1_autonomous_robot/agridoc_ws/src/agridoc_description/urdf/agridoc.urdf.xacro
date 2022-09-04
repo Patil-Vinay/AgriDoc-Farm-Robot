@@ -108,6 +108,27 @@
     <origin xyz="0.383 0 0.345"/>
   </joint>
 
+  <!-- BNO055 sits on the floor of the electronics box -->
+  <link name="imu_link"/>
+  <joint name="imu_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="imu_link"/>
+    <origin xyz="0.2 0 0.11"/>
+  </joint>
+
+  <!-- NEO-M8N GPS on the lid at the back, away from the lidar motor. Its patch antenna faces up -->
+  <link name="gps_link">
+    <visual>
+      <geometry><box size="0.04 0.04 0.012"/></geometry>
+      <material name="blue"/>
+    </visual>
+  </link>
+  <joint name="gps_joint" type="fixed">
+    <parent link="chassis"/>
+    <child link="gps_link"/>
+    <origin xyz="0.1 0 0.324"/>
+  </joint>
+
   <!-- top camera looks ahead at the plants, the lower one is tilted down at the ground for weeds -->
   <xacro:macro name="camera" params="name x z pitch">
     <link name="${name}_link"/>

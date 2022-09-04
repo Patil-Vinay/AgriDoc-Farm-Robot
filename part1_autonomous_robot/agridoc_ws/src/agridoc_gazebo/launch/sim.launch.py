@@ -12,6 +12,7 @@ from launch_ros.parameter_descriptions import ParameterValue
 def generate_launch_description():
     description = get_package_share_directory('agridoc_description')
     sim = get_package_share_directory('agridoc_gazebo')
+    navigation = get_package_share_directory('agridoc_navigation')
     gazebo_ros = get_package_share_directory('gazebo_ros')
 
     xacro_file = os.path.join(description, 'urdf', 'agridoc.urdf.xacro')
@@ -41,6 +42,20 @@ def generate_launch_description():
         output='screen',
     )
 
+    # wheel odom + imu, same as on the real robot
+    ekf = Node(
+        package='robot_localization',
+        executable='ekf_node',
+        name='ekf_filter_node',
+        parameters=[os.path.join(navigation, 'config', 'ekf.yaml'), {'use_sim_time': True}],
+    )
+
+    gyro_bias = Node(
+        package='agridoc_navigation',
+        executable='gyro_bias',
+        parameters=[{'use_sim_time': True}],
+    )
+
     return LaunchDescription([
         DeclareLaunchArgument('world', default_value=os.path.join(sim, 'worlds', 'tomato_field.world')),
         DeclareLaunchArgument('gui', default_value='true', description='Open the Gazebo window'),
@@ -50,4 +65,6 @@ def generate_launch_description():
         gazebo,
         robot_state_publisher,
         spawn,
+        gyro_bias,
+        ekf,
     ])
