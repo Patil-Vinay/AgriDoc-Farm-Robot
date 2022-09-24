@@ -6,3 +6,12 @@ part1_autonomous_robot/agridoc_ws/log/
 # python
 __pycache__/
 *.pyc
+
+# datasets, trained models and videos
+datasets/
+*.pt
+*.mp4
+*.avi
+*.mov
+part2_detection/disease_detection/model*/
+part2_detection/weed_detection/yolov5/

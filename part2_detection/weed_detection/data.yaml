@@ -1,0 +1,8 @@
+# Weed dataset. Paths are relative to the yolov5 folder the notebook runs in.
+path: ../datasets/weeds
+train: images/train
+val: images/val
+test:
+
+nc: 3
+names: ['Weed_BlackNightshade', 'Weed_CommonChickweed', 'Weed_VelvetLeaf']
