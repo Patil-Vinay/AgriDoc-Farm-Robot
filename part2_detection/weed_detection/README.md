@@ -72,3 +72,9 @@ F1, precision, recall and precision-recall curves:
 ![](images/output_3.jpeg)
 
 ![](images/output_4.jpg) ![](images/output_5.jpg)
+
+## On the robot
+
+The `weed_detector` node in `agridoc_detection` runs best.pt on the USB webcam that is tilted at the ground. It uses the YOLOv5 code from the same commit (`YOLOV5_DIR`) with the same steps as detect.py at 640 px. While a weed is in view (and for 1 s after it) the node publishes `true` on `pump` and the Mega switches the sprayer on. It expects the model at `~/agridoc_models/best.pt` and publishes the boxes on `weed_camera/detections` when something subscribes to it.
+
+    ros2 run agridoc_detection weed_detector --ros-args -p camera:=/dev/video1

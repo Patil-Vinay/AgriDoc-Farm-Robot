@@ -56,3 +56,9 @@ That run split the data by batches after a shuffle that changed every epoch, so 
 ![](images/output_2.png)
 
 ![](images/output_3.png)
+
+## On the robot
+
+The `disease_detector` node in `agridoc_detection` runs the SavedModel on the IMX219 camera on top of the robot once a second. Healthy leaves and predictions below 80% are skipped. Every disease it finds is written to `~/.ros/agridoc/disease_log.csv` with the time and the robot's position on the map. The same disease within 0.5 m of the last one is counted as the same plant. The robot does not stop or spray for diseases. It expects the model folder (with class_names.txt) at `~/agridoc_models/disease_model`.
+
+    ros2 run agridoc_detection disease_detector
