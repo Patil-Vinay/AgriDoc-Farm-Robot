@@ -72,11 +72,11 @@ Open the Serial Monitor at 115200 baud with "Newline" line ending.
 
 ## Running it from the Jetson
 
-The Mega is a CH340 clone, so it shows up as `/dev/ttyUSB*` just like the RPLidar and the two can swap numbers between boots. `mega_bridge` uses the fixed name Linux makes under `/dev/serial/by-id/` instead. Check it once with:
+The Mega is a CH340 clone, so it shows up as `/dev/ttyUSB*` just like the RPLidar and the two can swap numbers between boots. `mega_bridge` and `robot.launch.py` use the fixed names Linux makes under `/dev/serial/by-id/` instead. Check them once with:
 
     ls /dev/serial/by-id/
 
-The default is `usb-1a86_USB2.0-Serial-if00-port0`. If yours differs, pass it with `-p port:=`.
+The defaults are `usb-1a86_USB2.0-Serial-if00-port0` for the Mega and `usb-Silicon_Labs_CP2102_USB_to_UART_Bridge_Controller_0001-if00-port0` for the lidar. If yours differ, pass them with `mega_port:=` and `lidar_port:=` to `robot.launch.py` (or `-p port:=` to the node).
 
     ros2 run agridoc_bringup mega_bridge
 

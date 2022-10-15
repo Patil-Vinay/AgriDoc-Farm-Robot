@@ -22,6 +22,7 @@ setup(
     entry_points={
         'console_scripts': [
             'mega_bridge = agridoc_bringup.mega_bridge:main',
+            'gps_point = agridoc_bringup.gps_point:main',
         ],
     },
 )

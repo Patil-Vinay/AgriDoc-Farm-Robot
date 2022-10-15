@@ -54,7 +54,7 @@
       <geometry><box size="0.47 0.40 0.228"/></geometry>
     </collision>
     <collision>
-      <origin xyz="0.383 0 0.345"/>
+      <origin xyz="0.370 0 0.345"/>
       <geometry><cylinder radius="0.035" length="0.054"/></geometry>
     </collision>
     <inertial>
@@ -105,7 +105,8 @@
   <joint name="lidar_joint" type="fixed">
     <parent link="chassis"/>
     <child link="lidar_link"/>
-    <origin xyz="0.383 0 0.345"/>
+    <!-- on the spin axis, the middle of the round top. The motor end points forward -->
+    <origin xyz="0.370 0 0.345"/>
   </joint>
 
   <!-- BNO055 sits on the floor of the electronics box -->

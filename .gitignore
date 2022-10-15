@@ -13,5 +13,7 @@ datasets/
 *.mp4
 *.avi
 *.mov
+# except the simulation videos in the docs
+!docs/videos/*.mp4
 part2_detection/disease_detection/model*/
 part2_detection/weed_detection/yolov5/

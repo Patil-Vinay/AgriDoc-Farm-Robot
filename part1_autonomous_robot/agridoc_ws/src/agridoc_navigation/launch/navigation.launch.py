@@ -39,7 +39,7 @@ def generate_launch_description():
         executable='patrol',
         output='screen',
         parameters=[{'use_sim_time': use_sim_time,
-                     'route_file': os.path.join(pkg, 'config', 'field_route.yaml')}],
+                     'route_file': LaunchConfiguration('route')}],
         condition=IfCondition(patrol))
 
     return LaunchDescription([
@@ -47,6 +47,7 @@ def generate_launch_description():
         DeclareLaunchArgument('map', default_value=os.path.join(pkg, 'maps', 'tomato_field.yaml')),
         DeclareLaunchArgument('rviz', default_value='true'),
         DeclareLaunchArgument('patrol', default_value='false'),
+        DeclareLaunchArgument('route', default_value=os.path.join(pkg, 'config', 'field_route.yaml')),
         bringup,
         rviz_node,
         patrol_node,
